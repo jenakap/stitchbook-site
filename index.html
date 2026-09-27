@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stitchbook — browse your embroidery designs visually</title>
+<meta name="description" content="Stitchbook is a native Mac app that catalogs your embroidery design files and lets you browse, search, and organize them visually instead of opening files one by one.">
+
+<!-- Optional: uncomment once you have a 1200x630 share image at images/og-image.png
+<meta property="og:title" content="Stitchbook — browse your embroidery designs visually">
+<meta property="og:description" content="A native Mac app that catalogs embroidery design files and lets you browse, search, and organize them visually.">
+<meta property="og:image" content="images/og-image.png">
+<meta property="og:type" content="website">
+-->
+
+<style>
+  :root {
+    --ink: #2b2420;
+    --ink-soft: #6b5f56;
+    --paper: #faf6f1;
+    --paper-alt: #f1e9e0;
+    --accent: #a6432f;
+    --accent-dark: #832f1f;
+    --thread: #2f6b5e;
+    --border: #e3d8cb;
+    --max: 880px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  a { color: var(--accent); }
+
+  img { max-width: 100%; display: block; }
+
+  .wrap {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- Header ---- */
+
+  header.site {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  header.site .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .brand .dot { color: var(--accent); }
+
+  nav.site a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-left: 24px;
+  }
+
+  nav.site a:hover { color: var(--ink); }
+
+  /* ---- Buttons ---- */
+
+  .btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn:hover { background: var(--accent-dark); }
+
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--border);
+  }
+
+  .btn.secondary:hover { border-color: var(--ink-soft); }
+
+  /* ---- Hero ---- */
+
+  .hero {
+    padding: 64px 0 48px;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+  }
+
+  .hero .sub {
+    font-size: 1.2rem;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 auto 32px;
+  }
+
+  .hero .cta-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .hero .fineprint {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---- Video ---- */
+
+  .video-frame {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    margin: 40px 0;
+    box-shadow: 0 12px 32px rgba(43,36,32,0.15);
+  }
+
+  .video-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  /* ---- Screenshot placeholders ---- */
+  /*
+    Each screenshot slot below is a styled placeholder box, not a real
+    <img>. To swap in a real screenshot: replace the whole
+    <div class="shot placeholder">...</div> block with:
+      <img class="shot" src="images/FILENAME.png" alt="DESCRIPTION">
+    Recommended screenshot size: ~1600x1000px, light mode, real (or
+    realistic-looking) design data rather than an empty catalog.
+  */
+
+  .shot.placeholder {
+    aspect-ratio: 16 / 10;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    background: var(--paper-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .shot.placeholder .inner {
+    max-width: 420px;
+  }
+
+  .shot.placeholder .badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+    margin-bottom: 10px;
+  }
+
+  .shot.placeholder p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+
+  img.shot {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 32px rgba(43,36,32,0.12);
+    cursor: zoom-in;
+    transition: transform 0.15s ease;
+  }
+
+  img.shot:hover { transform: scale(1.01); }
+
+  /* ---- Lightbox ---- */
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(20,16,14,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    z-index: 1000;
+    cursor: zoom-out;
+  }
+
+  .lightbox[hidden] { display: none; }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    cursor: default;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lightbox-close:hover { background: rgba(255,255,255,0.22); }
+
+  /* ---- Sections ---- */
+
+  section { padding: 56px 0; }
+
+  section.alt {
+    background: var(--paper-alt);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  section h2 {
+    font-size: 1.7rem;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-align: center;
+  }
+
+  section .section-intro {
+    text-align: center;
+    color: var(--ink-soft);
+    max-width: 560px;
+    margin: 0 auto 40px;
+  }
+
+  /* ---- Problem ---- */
+
+  .problem p {
+    font-size: 1.1rem;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+
+  /* ---- Features ---- */
+
+  .features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .feature {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+
+  @media (min-width: 720px) {
+    .feature {
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .feature.reverse .shot-col { order: 2; }
+    .feature.reverse .text-col { order: 1; }
+  }
+
+  .feature .text-col h3 {
+    margin: 0 0 10px;
+    font-size: 1.25rem;
+  }
+
+  .feature .text-col p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  /* ---- Updates ---- */
+
+  .updates-list {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .update-entry {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 20px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .update-entry:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .update-version {
+    font-weight: 700;
+    color: var(--thread);
+    font-size: 0.95rem;
+    padding-top: 2px;
+  }
+
+  .update-date {
+    display: block;
+    font-weight: 400;
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
+  .update-body h3 {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+  }
+
+  .update-body ul {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--ink-soft);
+  }
+
+  .update-body li { margin-bottom: 4px; }
+
+  /* ---- Beta notice ---- */
+
+  .beta-notice {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+  }
+
+  .beta-notice ul {
+    margin: 12px 0 0;
+    padding-left: 20px;
+    color: var(--ink-soft);
+  }
+
+  .beta-notice li { margin-bottom: 6px; }
+
+  /* ---- Signup ---- */
+
+  .signup-box {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: center;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px;
+  }
+
+  .signup-box .btn { width: 100%; padding: 16px; font-size: 1.05rem; }
+
+  .signup-box .fineprint {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  /*
+    Alternative: embed the Google Form directly on the page instead of
+    linking out. Get the embed URL from the form's Send -> <> (embed)
+    option in Google Forms (it looks like .../viewform?embedded=true),
+    then swap the button above for:
+
+    <div class="form-embed">
+      <iframe src="https://docs.google.com/forms/d/e/FORM_ID/viewform?embedded=true"
+              width="100%" height="600" frameborder="0">Loading…</iframe>
+    </div>
+  */
+
+  /* ---- FAQ ---- */
+
+  .faq {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .faq details {
+    border-bottom: 1px solid var(--border);
+    padding: 18px 0;
+  }
+
+  .faq summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.02rem;
+    list-style: none;
+  }
+
+  .faq summary::-webkit-details-marker { display: none; }
+
+  .faq summary::before {
+    content: "+";
+    display: inline-block;
+    width: 20px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .faq details[open] summary::before { content: "–"; }
+
+  .faq p {
+    margin: 10px 0 0 20px;
+    color: var(--ink-soft);
+  }
+
+  /* ---- Footer ---- */
+
+  footer.site {
+    padding: 40px 0;
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+  }
+
+  footer.site a { color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top">Stitchbook<span class="dot">.</span></a>
+    <nav class="site">
+      <a href="#features">Features</a>
+      <a href="#updates">Updates</a>
+      <a href="#faq">FAQ</a>
+      <a href="#signup">Join Beta</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="wrap">
+      <h1>Stop digging through embroidery files to see what's inside them.</h1>
+      <p class="sub">
+        Stitchbook catalogs your embroidery designs (.hus, .vp3, .shv, .pes, .dst),
+        generates real previews, and gives you a visual, searchable library —
+        instead of a folder of cryptic filenames.
+      </p>
+      <div class="cta-row">
+        <a class="btn" href="#signup">Join the beta</a>
+        <a class="btn secondary" href="https://youtu.be/JgyeF1VEG30" target="_blank" rel="noopener">Watch the demo</a>
+      </div>
+      <p class="fineprint">Free during beta &middot; macOS only for now</p>
+
+      <div class="video-frame">
+        <iframe
+          src="https://www.youtube.com/embed/JgyeF1VEG30"
+          title="Stitchbook demo"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <img class="shot" src="images/hero-catalog.png" alt="Stitchbook's catalog grid view showing embroidery design thumbnails">
+
+    </div>
+  </section>
+
+  <!-- ================= PROBLEM ================= -->
+  <section class="problem">
+    <div class="wrap">
+      <p>
+        If you embroider, you know the drill: a folder full of files named
+        <code>btrfly_4x4_v2.pes</code> and no way to tell what's actually in
+        them without opening each one. Stitchbook scans your folder once,
+        renders a real preview of every design, and lets you browse, search,
+        and find duplicates the way you'd browse photos — not files.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= FEATURES ================= -->
+  <section id="features" class="alt">
+    <div class="wrap">
+      <h2>What it does</h2>
+      <p class="section-intro">The core of Stitchbook — point it at a folder, and it takes care of the rest.</p>
+
+      <div class="features">
+
+        <div class="feature">
+          <div class="shot-col">
+            <img class="shot" src="images/feature-search.png" alt="Searching the Stitchbook catalog for 'butterfly', showing narrowed results">
+          </div>
+          <div class="text-col">
+            <h3>Visual catalog</h3>
+            <p>Every design gets a real rendered preview — filename, format, and stitch count at a glance. Search and filter instead of opening files one by one.</p>
+          </div>
+        </div>
+
+        <div class="feature reverse">
+          <div class="shot-col">
+            <img class="shot" src="images/feature-duplicates.png" alt="Duplicate review screen in Stitchbook showing an identical file match">
+          </div>
+          <div class="text-col">
+            <h3>Duplicate detection</h3>
+            <p>Perceptual-hash matching flags likely duplicates so you can clean up a messy library without guessing which file is the "real" one.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="shot-col">
+            <img class="shot" src="images/feature-tagging.png" alt="A design's detail view showing AI-generated subject tags">
+          </div>
+          <div class="text-col">
+            <h3>AI-based tagging</h3>
+            <p>Designs are automatically tagged by subject matter — flower, butterfly, animal, and more — so searching "butterfly" finds every butterfly design, not just ones with "butterfly" in the filename.</p>
+          </div>
+        </div>
+
+        <div class="feature reverse">
+          <div class="shot-col">
+            <img class="shot" src="images/feature-search-options.png" alt="Advanced search filters for thread color, stitch time, dimensions, and tags">
+          </div>
+          <div class="text-col">
+            <h3>Filter by color, time, and tags</h3>
+            <p>Narrow a search by more than a filename — thread color, estimated stitch-out time, size, format, and the full tag vocabulary — so you can find the right design for a project, not just a design you remember the name of.</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="shot-col">
+            <img class="shot" src="images/feature-search-collections.png" alt="A design that's part of a collection pack, with a link to its PDF instructions">
+          </div>
+          <div class="text-col">
+            <h3>Collections, with instructions included</h3>
+            <p>When a design belongs to a multi-file collection with a PDF instruction sheet, Stitchbook links straight to it — and indexes the PDF's text, so it turns up in search too.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= UPDATES ================= -->
+  <!--
+    Add a new .update-entry block at the TOP of .updates-list for each
+    release (newest first). Copy the v0.9 block below as a template.
+  -->
+  <section id="updates">
+    <div class="wrap">
+      <h2>What's new</h2>
+      <p class="section-intro">Stitchbook is actively being built — here's what's shipped recently.</p>
+
+      <div class="updates-list">
+
+        <div class="update-entry">
+          <div class="update-version">v0.9<span class="update-date">Sep 2026</span></div>
+          <div class="update-body">
+            <ul>
+              <li>Favorite your go-to designs for quick access, with a dedicated Favorites view</li>
+              <li>Search by thread color, not just filename or tags</li>
+              <li>Filename search now understands real keywords (camelCase, separators) instead of matching raw filenames</li>
+              <li>Filter by stitch-out time to find quick projects</li>
+              <li>Text from collection/pack PDFs is now searchable alongside your designs</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BETA EXPECTATIONS ================= -->
+  <section>
+    <div class="wrap">
+      <h2>What "beta" means right now</h2>
+      <div class="beta-notice">
+        <p>Stitchbook started as a project for my mom, and I'm opening it up to a small group of beta testers before it's more broadly ready. A few things to know going in:</p>
+        <ul>
+          <li>macOS only for now — no Windows version yet.</li>
+          <li>You may hit rough edges. I'm actively fixing things as they come up.</li>
+          <li>Your files never leave your Mac — scanning, previews, and search all run locally. The one exception is optional AI tagging, which sends a design's image to a hosted service if you turn it on.</li>
+          <li>Beta builds aren't on the Mac App Store — you'll install directly from a download I send you.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SIGNUP ================= -->
+  <section id="signup" class="alt">
+    <div class="wrap">
+      <h2>Join the beta</h2>
+      <p class="section-intro">Leave your email and I'll follow up with a download link and instructions.</p>
+      <div class="signup-box">
+        <a class="btn" href="https://forms.gle/yyNaX1ZEaPNgnyjq6" target="_blank" rel="noopener">Sign up for the beta</a>
+        <p class="fineprint">Opens a short Google Form in a new tab. No spam — just beta updates.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section id="faq">
+    <div class="wrap">
+      <h2>Questions</h2>
+      <div class="faq">
+
+        <details>
+          <summary>Is it free?</summary>
+          <p>Yes, free during the beta.</p>
+        </details>
+
+        <details>
+          <summary>What does it do with my files?</summary>
+          <p>Scanning, previews, search, and duplicate detection all run locally on your Mac — your design files never leave your machine for those. The one exception is AI tagging, which is optional: if you turn it on, a design's image is sent to a hosted tagging service to generate subject tags.</p>
+        </details>
+
+        <details>
+          <summary>What file formats are supported?</summary>
+          <p>.hus, .vp3, .shv, .pes, and .dst today.</p>
+        </details>
+
+        <details>
+          <summary>What Mac do I need?</summary>
+          <p>Details on supported macOS versions will come with your beta invite — reach out if you're not sure yours qualifies.</p>
+        </details>
+
+        <details>
+          <summary>Will there be a Windows version?</summary>
+          <p>Not currently planned, but if there's enough interest I'll reconsider.</p>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p><a href="https://youtu.be/JgyeF1VEG30" target="_blank" rel="noopener">Watch the demo on YouTube</a></p>
+    <p>&copy; 2026 Stitchbook</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+(function () {
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightbox-img');
+
+  function openLightbox(img) {
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.hidden = true;
+    lightboxImg.src = '';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('img.shot').forEach(function (img) {
+    img.addEventListener('click', function () { openLightbox(img); });
+  });
+
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function (e) {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+  });
+})();
+</script>
+
+</body>
+</html>
