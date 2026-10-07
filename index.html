@@ -497,7 +497,7 @@
     <div class="wrap">
       <h1>Stop digging through embroidery files to see what's inside them.</h1>
       <p class="sub">
-        Stitchbook catalogs your embroidery designs (.hus, .vp3, .shv, .pes, .dst),
+        Stitchbook catalogs your embroidery designs (.hus, .vp3, .shv, .pes, .dst, .jef and more),
         generates real previews, and gives you a visual, searchable library —
         instead of a folder of cryptic filenames.
       </p>
@@ -609,6 +609,18 @@
       <div class="updates-list">
 
         <div class="update-entry">
+          <div class="update-version">v0.10<span class="update-date">Oct 2026</span></div>
+          <div class="update-body">
+            <ul>
+              <li>Print a design as a one-page sheet &mdash; its colors, stitching order and a center mark &mdash; or as a full-size template to lay on your fabric (included with your beta license key)</li>
+              <li>A Thread field beside the search box: type a thread name or brand to find every design that uses it. The color swatches now show only colors your designs actually use</li>
+              <li>Remove a folder from your catalog without touching any of your files &mdash; scan it again and everything comes back, tags included</li>
+              <li>If your settings file is ever damaged, Stitchbook keeps a copy and tells you instead of quietly starting over</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="update-entry">
           <div class="update-version">v0.9<span class="update-date">Sep 2026</span></div>
           <div class="update-body">
             <ul>
@@ -617,6 +629,8 @@
               <li>Filename search now understands real keywords (camelCase, separators) instead of matching raw filenames</li>
               <li>Filter by stitch-out time to find quick projects</li>
               <li>Text from collection/pack PDFs is now searchable alongside your designs</li>
+              <li>Move exact duplicate files to the Trash from the duplicate review, after a confirmation</li>
+              <li>Pick tags from a list in the filters, and see a count of how many filters are on</li>
             </ul>
           </div>
         </div>
@@ -634,7 +648,7 @@
         <ul>
           <li>macOS only for now — no Windows version yet.</li>
           <li>You may hit rough edges. I'm actively fixing things as they come up.</li>
-          <li>Your files never leave your Mac — scanning, previews, and search all run locally. The one exception is optional AI tagging, which sends a design's image to a hosted service if you turn it on.</li>
+          <li>Your files never leave your Mac — scanning, previews, and search all run locally. The one exception is optional AI tagging, which sends a design's image to a hosted service if you turn it on (your license key is checked with that service too).</li>
           <li>Beta builds aren't on the Mac App Store — you'll install directly from a download I send you.</li>
         </ul>
       </div>
@@ -661,17 +675,17 @@
 
         <details>
           <summary>Is it free?</summary>
-          <p>Yes, free during the beta.</p>
+          <p>Yes, free during the beta. AI tagging and printing use a license key, which comes with your beta invite.</p>
         </details>
 
         <details>
           <summary>What does it do with my files?</summary>
-          <p>Scanning, previews, search, and duplicate detection all run locally on your Mac — your design files never leave your machine for those. The one exception is AI tagging, which is optional: if you turn it on, a design's image is sent to a hosted tagging service to generate subject tags.</p>
+          <p>Scanning, previews, search, and duplicate detection all run locally on your Mac — your design files never leave your machine for those. The one exception is AI tagging, which is optional and uses your license key: if you turn it on, a design's image is sent to a hosted tagging service to generate subject tags, and the app checks your license key with that service from time to time.</p>
         </details>
 
         <details>
           <summary>What file formats are supported?</summary>
-          <p>.hus, .vp3, .shv, .pes, and .dst today.</p>
+          <p>Ten formats today: .hus, .vp3, .shv, .pes, .dst, .jef, .xxx, .exp, .pcs and .sew. Some .shv files don't read correctly yet.</p>
         </details>
 
         <details>
